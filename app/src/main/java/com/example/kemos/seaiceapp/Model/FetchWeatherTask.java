@@ -3,6 +3,7 @@ package com.example.kemos.seaiceapp.Model;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.format.Time;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -14,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.SQLException;
 
 
 /**
@@ -23,11 +25,11 @@ public class FetchWeatherTask extends AsyncTask<String, Void, WeatherItem> {
 
     private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
      Context context ;
-    float longitude , latitude ;
+    double longitude , latitude ;
     WeatherItem weatherData;
 
 
-    public FetchWeatherTask(Context c, float longitude, float latitude){
+    public FetchWeatherTask(Context c, double longitude, double latitude){
 
         this.context = c ;
         this.longitude = longitude ;
@@ -60,9 +62,14 @@ public class FetchWeatherTask extends AsyncTask<String, Void, WeatherItem> {
 
             JSONObject weatherWind = forecastJson.getJSONObject(OWM_WIND);
             float  wind = weatherWind.getLong(OWM_WIND_SPEED);
-
-            weatherItemObject.setTemp( temp);
-            weatherItemObject.setWind( wind);
+            Time time = new Time();
+              time.setToNow();
+            weatherItemObject.setLongitude( longitude);
+            weatherItemObject.setLatitude(latitude);
+            weatherItemObject.setTemp(temp);
+            weatherItemObject.setWind(wind);
+            weatherItemObject.setThickness(12);
+            weatherItemObject.setDate(String.valueOf(time.year));
      //   }
 
         weatherData = weatherItemObject ;
@@ -90,6 +97,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, WeatherItem> {
             Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                     .appendQueryParameter(longitudeStr, String.valueOf(longitude))
                     .appendQueryParameter(latitudeStr, String.valueOf(latitude))
+                    .appendQueryParameter(units, "metric")
                     .appendQueryParameter(APIKey_PARAM, APIKey)
                     .build();
 
@@ -152,9 +160,31 @@ public class FetchWeatherTask extends AsyncTask<String, Void, WeatherItem> {
        if ( result != null ) {
                Log.d("temp" , result.getTemp() + "");
                Log.d("wind" , result.getWind() + "");
-
        }
+           WeatherOperations weatherOperations ;
 
+       weatherOperations = new WeatherOperations(context);
+       try {
+           weatherOperations.open();
+       } catch (SQLException e) {
+           e.printStackTrace();
+       }
+       if (  weatherOperations.addWeather(
+               result.getLongitude() ,
+               result.getLatitude(),
+               result.getTemp(),
+               result.getWind(),
+               result.getThickness(),
+               result.getDate()) == -1 )
+
+           weatherOperations.updateWeather(result.getLongitude() ,
+                   result.getLatitude(),
+                   result.getTemp(),
+                   result.getWind(),
+                   result.getThickness(),
+                   result.getDate());
+
+           weatherOperations.getWeather(result.getLongitude(),result.getLatitude());
     }
 }
 

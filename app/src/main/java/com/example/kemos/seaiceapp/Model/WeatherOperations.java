@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.sql.SQLException;
 
@@ -37,6 +38,7 @@ public class WeatherOperations {
                 + " and " + DataBaseWrapper.WEATHER_LONGITUDE + "=" + lon
                 ,null);
         cursor.moveToFirst();
+
         return  parseWeather(cursor);
     }
     public void updateWeather(double lon , double lat , double temp , double wind , double thickness , String date) {
@@ -49,7 +51,7 @@ public class WeatherOperations {
                 + " and " + DataBaseWrapper.WEATHER_LONGITUDE + "=" + lon );
 
     }
-    public void addWeather( double longitude , double latitude , double temp , float windSpeed, String date , double thickness) {
+    public long addWeather( double longitude , double latitude , double temp , double windSpeed , double thickness, String date) {
         ContentValues values = new ContentValues();
 
         values.put(DataBaseWrapper.WEATHER_LONGITUDE, longitude);
@@ -58,7 +60,8 @@ public class WeatherOperations {
         values.put(DataBaseWrapper.WEATHER_DATE, date);
         values.put(DataBaseWrapper.WEATHER_WIND, windSpeed);
         values.put(DataBaseWrapper.WEATHER_THICKNESS, thickness);
-        long studId =  database.insert(DataBaseWrapper.WEATHER_TABLE, null, values);
+
+        return database.insert(DataBaseWrapper.WEATHER_TABLE, null, values);
 
     }
     private WeatherItem parseWeather(Cursor cursor) {
@@ -71,6 +74,12 @@ public class WeatherOperations {
         WeatherItem.setWind(cursor.getFloat(3));
         WeatherItem.setThickness(cursor.getFloat(4));
         WeatherItem.setDate(cursor.getString(5));
+
+
+        Log.d("temp db uu ----", WeatherItem.getTemp() + "");
+        Log.d("wind db uu--- ", WeatherItem.getWind() + "");
+        Log.d("date db uu--- ", WeatherItem.getDate() + "");
+        Log.d("lon db uu--- ", WeatherItem.getLongitude() + "");
         return WeatherItem;
 
     }

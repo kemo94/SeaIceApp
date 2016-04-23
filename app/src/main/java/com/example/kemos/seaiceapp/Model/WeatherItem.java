@@ -1,52 +1,52 @@
 package com.example.kemos.seaiceapp.Model;
 
 public class WeatherItem  {
-    private float longitude ;
-    private float latitude ;
-    private float temp ;
-    private float thickness ;
+    private double longitude ;
+    private double latitude ;
+    private double temp ;
+    private double thickness ;
+    private double wind ;
+    private String date;
 
-    public float getThickness() {
+    public double getThickness() {
         return thickness;
     }
 
-    public void setThickness(float thickness) {
+    public void setThickness(double thickness) {
         this.thickness = thickness;
     }
 
-    public float getWind() {
+    public double getWind() {
         return wind;
     }
 
-    public void setWind(float wind) {
+    public void setWind(double wind) {
         this.wind = wind;
     }
 
-    private float wind ;
-    private String date;
 
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public float getTemp() {
+    public double getTemp() {
         return temp;
     }
 
-    public void setTemp(float temp) {
+    public void setTemp(double temp) {
         this.temp = temp;
     }
 
